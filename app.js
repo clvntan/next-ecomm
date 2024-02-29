@@ -6,8 +6,6 @@ import cors from "cors" // cors
 import { signAccessToken } from "./src/utils/jwt.js" // sign-in endpoint
 
 const app = express();
-const port = process.env.PORT || 8080;
-
 app.use(express.json())
 
 // cors
@@ -16,9 +14,9 @@ app.get('/products/:id', function (req, res, next) {
   res.json({msg: 'This is CORS-enabled for all origins!'})
 })
 
-app.listen(80, function () {
-  console.log('CORS-enabled web server listening on port 80')
-})
+// app.listen(80, function () {
+//   console.log('CORS-enabled web server listening on port 80')
+// })
 
 // Function to filter on showing id, name & email
 function filterUser(user) {
@@ -139,7 +137,4 @@ app.post('/sign-in', async (req, res) => {
   return res.json({ accessToken, userId })
 })
 
-app.listen(port, () => {
-  console.log(`App started; listening on port ${port}`)
-})
-
+export default app
