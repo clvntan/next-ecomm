@@ -39,61 +39,54 @@ describe("POST /users", () => {
     expect(response.body.email).toBe(user.email);
     expect(response.body.password).toBe(undefined);
   });
-})
 
 // Test when email is existed
 it("with same email should fail", async () => {
-    const response = await request(app)
-      .post("/users")
-      .send("/users")
-      .set('Accept', 'application/json')
-    expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBeTruthy;
-    expect(response.body.error.email).toBe('cannot be blank');
-  });
+  const response = await request(app)
+    .post("/users")
+    .send(user)
+    .set('Accept', 'application/json')
+  expect(response.statusCode).toBe(500);
+  expect(response.body.error).toBeTruthy;
+  expect(response.body.error.email).toBe('already taken');
+});
 
 // Test when password is invalid
-  it("with invalid password should fail", async () => {
-    const invalidPw = {
-      password: 'short'
-    };
-  
-    const response = await request(app)
-      .post("/users")
-      .send(invalidPw)
-      .set('Accept', 'application/json');
-  
-    expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBeTruthy;
-    expect(response.body.error.password).toBe('should be at least 8 characters');
-  });
-  
- // Test with invalid email 
-  it("with invalid email should fail", async () => {
-    const invalidEmail = {
-        email: 'unique@example_com_'
-      };
-    const response = await request(app)
-      .post("/users")
-      .send(invalidEmail)
-      .set('Accept', 'application/json')
-    expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBeTruthy;
-    expect(response.body.error.email).toBe("is invalid");
-  });
+it("with invalid password should fail", async () => {
+  user.password = "short"
+   const response = await request(app)
+    .post("/users")
+    .send(user)
+    .set('Accept', 'application/json');
+  expect(response.statusCode).toBe(400);
+  expect(response.body.error).toBeTruthy;
+  expect(response.body.error.password).toBe('should be at least 8 characters');
+});
+
+// Test with invalid email 
+it("with invalid email should fail", async () => {
+  user.email = 'unique@example_com_'
+  const response = await request(app)
+    .post("/users")
+    .send(user)
+    .set('Accept', 'application/json')
+  expect(response.statusCode).toBe(400);
+  expect(response.body.error).toBeTruthy;
+  expect(response.body.error.email).toBe("is invalid");
+});
 
 // Test when name is blank  
-  it("with name is blank", async () => {
-    const blankName = {
-        name: ''
-      };
-    const response = await request(app)
-      .post("/users")
-      .send(blankName)
-      .set('Accept', 'application/json')
-      expect(response.statusCode).toBe(400);
-      expect(response.body.error).toBeTruthy;
-      expect(response.body.error.name).toBe("cannot be blank");
-  });
+it("with name is blank", async () => {
+  user.name = ''
+  const response = await request(app)
+    .post("/users")
+    .send(user)
+    .set('Accept', 'application/json')
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBeTruthy;
+    expect(response.body.error.name).toBe("cannot be blank");
+});
+})
+
 
 

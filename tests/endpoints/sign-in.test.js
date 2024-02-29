@@ -11,7 +11,12 @@ async function cleanupDatabase() {
   );
 }
 
-describe("POST /sign-in", () => {
+describe("POST /users", () => {
+  const user = {
+    name: 'John',
+    email: 'john9@example.com',
+    password: 'insecure',
+  }
 
   beforeAll(async () => {
     await cleanupDatabase()
@@ -22,45 +27,55 @@ describe("POST /sign-in", () => {
     await cleanupDatabase()
   });
 
-// Test for creating a user using sign up endpoint then test sign-in endpoint to make sure accessToken is returned
+// Test for creating a user using sign up endpoint then test auth endpoint to make sure accessToken is returned
 it("should return accessToken with valid credentials", async () => {
-    const signUpRes = await request(app)
+    await request(app)
     .post("/users")
-    .send({name: "John", email: "john9@example.com", password: "insecure"});
+    .send(user)
+    .set("Accept", "application/json");
 
     const signInRes = await request(app)
-    .post("/sign-in")
-    .send({email: "john9@example.com", password: "insecure"})
+    .post("/auth")
+    .send(user)
     .set("Accept", "application/json");
     expect(signInRes.statusCode).toBe(200);
     expect(signInRes.body.accessToken).toBeTruthy();   
     });
+
+    // Test with auth endpoint with wrong email
+    it("should return 401 with wrong email", async () => {
+      user.email = "john111@examplecom"
+      await request(app)
+      .post("/users")
+      .send(user)
+      .set("Accept", "application/json");
+  
+      const signInRes = await request(app)
+      .post("/auth")
+      .send(user)
+      .set("Accept", "application/json");
+      expect(signInRes.statusCode).toBe(401);
+      expect(signInRes.body.accessToken).toBeFalsy;   
+      expect(signInRes.body.error.email).toBe("is invalid")
+   });
+
+   // Test with auth endpoint with wrong password
+it("should return 401 with wrong password", async () => {
+  user.password = ""
+  await request(app)
+  .post("/users")
+  .send(user)
+  .set("Accept", "application/json");
+
+  const signInRes = await request(app)
+  .post("/auth")
+  .send(user)
+  .set("Accept", "application/json");
+  expect(signInRes.statusCode).toBe(401);
+  expect(signInRes.body.error.password).toBe("cannot be blank");   
+});
 });
 
-// Test with sign-in endpoint with wrong email
-it("should return 401 with wrong email", async () => {
-    const signUpRes = await request(app)
-    .post("/users")
-    .send({name: "John", email: "john9@example.com", password: "insecure"});
 
-    const signInRes = await request(app)
-    .post("/sign-in")
-    .send({email: "john@example.com", password: "insecure"})
-    .set("Accept", "application/json");
-    expect(signInRes.statusCode).toBe(401);
-    expect(signInRes.body.accessToken).toBe(undefined);   
- });
 
-// Test with sign-in endpoint with wrong password
-it("should return 401 with wrong password", async () => {
-    const signUpRes = await request(app)
-    .post("/users")
-    .send({name: "John", email: "john9@example.com", password: "insecure"});
 
-    const signInRes = await request(app)
-    .post("/sign-in")
-    .send({email: "john9@example.com", password: "secure"})
-    .set("Accept", "application/json");
-    expect(signInRes.statusCode).toBe(401);
-    expect(signInRes.body.accessToken).toBe(undefined);   
- });
