@@ -1,4 +1,6 @@
 import express from "express"
+import morgan from "morgan"
+import auth from "./src/middlewares/auth.js"
 // import prisma from "./src/utils/prisma.js"
 // import { Prisma } from "@prisma/client"
 // import bcrypt from "bcryptjs" // bcryptjs
@@ -9,10 +11,15 @@ import authRouter from "./src/controllers/auth.controllers.js"
 
 const app = express();
 app.use(express.json())
+app.use(morgan('combined'))
 app.use(cors()) // cors
 
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
+
+app.get('/protected', auth, (req, res) => {
+    res.json({ "hello": "world" })
+  })
 
 // app.get('/', async (req, res) => {
 //     const allUsers = await prisma.user.findMany()
