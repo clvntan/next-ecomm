@@ -26,9 +26,9 @@ model Image {
   user          User?     @relation(fields: [userId], references: [id])
   userId        Int
   uploaded_at   DateTime  @default(now())
-  price         Int
   title         String
   description   String?
+  price         Int
   url           String    @unique
 }
 
