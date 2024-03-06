@@ -30,5 +30,6 @@ model Image {
   description   String?
   price         Int
   url           String    @unique
+  fileName      String 
 }
 

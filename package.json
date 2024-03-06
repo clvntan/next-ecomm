@@ -7,7 +7,8 @@
   "scripts": {
     "start": "npx dotenv -e .env.development node server.js",
     "start:dev": "npx dotenv -e .env.development nodemon server.js",
-    "test": "npx dotenv -e .env.test prisma migrate deploy && npx dotenv -e .env.test jest -i"
+    "test": "npx dotenv -e .env.test prisma migrate deploy && npx dotenv -e .env.test jest -i",
+    "migrate": "npx dotenv -e .env.development prisma migrate dev"
   },
   "keywords": [],
   "author": "",
