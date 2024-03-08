@@ -9,6 +9,7 @@ import { signAccessToken } from "./src/utils/jwt.js" // auth endpoint
 import userRouter from "./src/controllers/users-controller.js"
 import authRouter from "./src/controllers/auth.controllers.js"
 import imageRouter from "./src/controllers/image.controllers.js"
+import paymentRouter from "./src/controllers/payment.controllers.js"
 
 const app = express();
 app.use(express.json())
@@ -18,6 +19,7 @@ app.use(cors()) // cors
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
 app.use('/image', imageRouter)
+app.use('/payment', paymentRouter)
 
 app.get('/protected', auth, (req, res) => {
     res.json({ "hello": "world" })
