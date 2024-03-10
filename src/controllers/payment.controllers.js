@@ -23,7 +23,7 @@ const session = await stripe.checkout.sessions.create({
           name: image.title,
           description: image.description,
         },
-        unit_amount: (image.price),
+        unit_amount: image.price * 100,
       },
       quantity: 1,
     },
